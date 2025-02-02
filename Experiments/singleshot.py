@@ -7,6 +7,8 @@ from Utils import generator
 from Utils import metrics
 from train import *
 from prune import *
+import time
+
 
 def run(args):
     ## Random Seed and Device ##
@@ -35,7 +37,7 @@ def run(args):
     ## Pre-Train ##
     print('Pre-Train for {} epochs.'.format(args.pre_epochs))
     pre_result = train_eval_loop(model, loss, optimizer, scheduler, train_loader, 
-                                 test_loader, device, args.pre_epochs, args.verbose)
+                                 test_loader, device, args.pre_epochs, args.verbose, use_amp=args.quantization)
 
     ## Prune ##
     print('Pruning with {} for {} epochs.'.format(args.pruner, args.prune_epochs))
@@ -47,8 +49,20 @@ def run(args):
     
     ## Post-Train ##
     print('Post-Training for {} epochs.'.format(args.post_epochs))
+    start = time.time()
     post_result = train_eval_loop(model, loss, optimizer, scheduler, train_loader, 
-                                  test_loader, device, args.post_epochs, args.verbose) 
+                                  test_loader, device, args.post_epochs, args.verbose, use_amp=args.quantization) 
+    end = time.time()
+    training_time = end - start
+    print(f"Post-training time: {training_time:.2f} seconds")
+
+    # Log GPU memory usage (if CUDA is being used)
+    if torch.cuda.is_available() and not args.no_cuda:
+        mem_current = torch.cuda.memory_allocated(device)
+        mem_peak = torch.cuda.max_memory_allocated(device)
+        print(f"GPU memory allocated: {mem_current/1e6:.2f} MB, peak: {mem_peak/1e6:.2f} MB")
+
+
 
     ## Display Results ##
     frames = [pre_result.head(1), pre_result.tail(1), post_result.head(1), post_result.tail(1)]

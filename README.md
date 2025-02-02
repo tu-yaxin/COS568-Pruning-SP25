@@ -126,5 +126,46 @@ https://stackoverflow.com/questions/42315202/understanding-tensorboard-weight-hi
 
 Report the FLOP of each layer using pruner Rand |  Mag |  SNIP |  GraSP | SynFlow with the following settings
 `model = vgg16`, `dataset=cifar10`, `compression= 0.5`.
-### 3. Explain your results and submit a short report.
+### 3. Quantization with AMP (Bonus) 
+In this bonus section, you will use **mixed precision** (AMP) as a straightforward “quantization” approach and measure **training time** and **peak GPU memory** when pruning with **Rand**. This task is optional but highly recommended to understand how quantization can reduce resource usage.
+
+
+Below is an example one-line command to run **Rand pruning** at compression=0.05 with AMP:
+
+   ```
+   python main.py \
+     --model-class lottery \
+     --model vgg16 \
+     --dataset cifar10 \
+     --experiment singleshot \
+     --pruner rand \
+     --compression 0.05 \
+     --post-epoch 100 \
+     --expid rand_vgg16_cifar10_c0.05_amp \
+     --quantization
+   ```
+
+Omit the `--quantization` flag to train in full FP32 precision.
+
+
+As in previous tasks, let \(\text{compression} \in \{0.05, 0.1, 0.2, 0.5, 1, 2\}\). Prune with **Rand** for each compression value, **once with AMP** (`--quantization`) and **once without** it. For the non-quantized runs, rely on the verbose logs from Section 2 to collect the relevant metrics 
+
+In your write-up, present a table comparing memory usage and training time for each compression level, with and without AMP. 
+
+| Compression | Peak Mem (MB) w/ AMP | Time (s) w/ AMP | Peak Mem (MB) no AMP | Time (s) no AMP |
+|-------------|----------------------|-----------------|----------------------|-----------------|
+| 0.05        |                      |                 |                      |                 |
+| 0.1         |                      |                 |                      |                 |
+| 0.2         |                      |                 |                      |                 |
+| 0.5         |                      |                 |                      |                 |
+| 1           |                      |                 |                      |                 |
+| 2           |                      |                 |                      |                 |
+
+#### Brief Discussion
+
+- Note any memory savings and/or speedup with `--quantization`.  
+- If speed gains are minimal, discuss why (e.g., GPU architecture, batch size, overhead).  
+- This simple AMP experiment highlights how lower precision can potentially reduce resource costs without altering the model’s structure or hyperparameters.
+
+### 4. Explain your results and submit a short report.
 Please describe the settings of your experiments. Please include the required results (described in Task 1 and 2). Please add captions to describe your figures and tables. It would be best to write brief discussions on your results, such as the patterns (what and why), conclusions, and any observations you want to discuss.  

@@ -53,7 +53,9 @@ if __name__ == '__main__':
                         choices=['rand','mag','snip','grasp','synflow'],
                         help='prune strategy (default: rand)')
     pruning_args.add_argument('--compression', type=float, default=0.0,
-                        help='quotient of prunable non-zero prunable parameters before and after pruning (default: 1.0)')
+                        help='quotient of prunable non-zero prunable parameters before and after pruning (default: 1.0)') 
+    parser.add_argument('--quantization', action='store_true',
+                    help='If set, train and eval in float16 (simple approach).') 
     pruning_args.add_argument('--prune-epochs', type=int, default=1,
                         help='number of iterations for scoring (default: 1)')
     pruning_args.add_argument('--compression-schedule', type=str, default='exponential', choices=['linear','exponential'],
