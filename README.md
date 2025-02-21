@@ -60,7 +60,7 @@ python main.py --model-class default --model fc --dataset cifar10 --experiment s
 
 
 #### Tuning compression ratio. Please fill the results table:
-Prune models on CIFAR10 with VGG16, please replace {} with sparsity 10^-a for a \in {0.05,0.1,0.2,0.5,1,2}. Feel free to try other sparsity values.
+Prune models on CIFAR10 with VGG16, please replace {} with sparsity 10^-a for a \in {0.05,0.1,0.2,0.5,1,2}. Feel free to try other sparsity values. You can omit 0.05 from SNIP experiments.
 
 ```
 python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner synflow  --compression {}
